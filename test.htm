@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="description" content="basic-modal example">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Society of Grownups</title>
+  <style>
+    th {text-align: left;}
+    td {width:20%;}
+    ul, li {list-style: outside none none; padding:0; margin:0; }
+    .dates li {width: 180px; display: inline-block;}
+  </style>
+
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+
+</head>
+
+<body>
+	
+  <script>
+  var films = [
+						{
+							Title: "2001: A Space Odyssey",
+							Rating: 9.5,
+							Genre: "Science Fiction"
+						},
+						{
+							Title: "The Last House on the Left",
+							Rating: 4.1,
+							Genre: "Horror"
+						},
+						{
+							Title: "Shrek",
+							Rating: 8.8,
+							Genre: "Family"
+						},
+						{
+							Title: "2012",
+							Rating: 3.9,
+							Genre: "Drama"
+						},
+						{
+							Title: "Up",
+							Rating: 9.8,
+							Genre: "Family"
+						},
+						{
+							Title: "Interstellar",
+							Rating: 7.3,
+							Genre: "Science Fiction"
+						},
+						{
+							Title: "Shrek 2",
+							Rating: 8.8,
+							Genre: "Family"
+						}
+  ];
+
+
+  var matrix = matrix || {};
+
+  matrix = (function() {
+  	'use strict';
+
+		var id = 'content';
+
+		var initialize = function() {
+			$('body').append('<div id="' + id + '"></div>');
+			this.containMatrix();
+			this.sortMatrix();
+			this.populateMatrix();
+		}
+
+		var containMatrix = function() {
+			var html = [
+				'<table class="sortable">',
+					'<thead>',
+					  '<tr>',
+					      '<th id="title">Title</th>',
+					      '<th id="rating">Rating</th>',
+					      '<th id="genre">Genre</th>',
+					  '</tr>',
+					'</thead>',
+					'<tbody></tbody>',
+				'</table>'
+				].join('');
+			$('#' + id).html(html);
+		}
+
+		var sortMatrix = function() {
+	    films.sort(function(a,b){
+	      var a_compare = a.Rating, b_compare = b.Rating;
+	      //return a_compare > b_compare ? 1 : a_compare < b_compare ? -1 : 0;
+	      return (a_compare - b_compare) //|| a_compare.localeCompare(b_compare.name); 
+	    });
+		}
+
+		var populateMatrix = function() {
+	    var tr;
+	    for (var i = 0; i < films.length; i++) {
+	      tr = $('<tr/>');
+	      tr.append("<td>" + films[i].Title + "</td>");
+	      tr.append("<td>" + films[i].Rating + "</td>");
+	      tr.append("<td>" + films[i].Genre + "</td>");
+	      $('table tbody').append(tr);
+	    }
+		}
+
+		return {
+			initialize: initialize,
+			containMatrix: containMatrix,
+			sortMatrix: sortMatrix,
+			populateMatrix : populateMatrix,
+		}
+
+	})();
+
+	matrix.initialize();
+
+   
+//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+//http://stackoverflow.com/questions/5421253/sort-javascript-array-of-objects-based-on-one-of-the-objects-properties
+//http://stackoverflow.com/questions/12900058/how-can-i-sort-a-javascript-array-of-objects-numerically-and-then-alphabetically?lq=1
+//http://blog.garstasio.com/you-dont-need-jquery/selectors/
+
+
+  </script>
+</body>
+</html>
