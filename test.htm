@@ -2,9 +2,9 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
-  <meta name="description" content="basic-modal example">
+  <meta name="description" content="SOG assignment">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Society of Grownups</title>
+  <title>Society of Grownups &mdash; Assignment</title>
   <style>
     th {text-align: left;}
     td {width:20%;}
@@ -62,7 +62,7 @@
 
   var matrix = matrix || {};
 
-  matrix = (function() {
+  matrix = (function(window, document, jQuery) {
   	'use strict';
 
 		var id = 'content';
@@ -100,7 +100,7 @@
 
 		var populateMatrix = function() {
 	    var tr;
-	    for (var i = 0; i < films.length; i++) {
+	    for (var i = 0, length = films.length; i < length; i++) {
 	      tr = $('<tr/>');
 	      tr.append("<td>" + films[i].Title + "</td>");
 	      tr.append("<td>" + films[i].Rating + "</td>");
@@ -118,13 +118,13 @@
 
 	})();
 
-	matrix.initialize();
+	matrix.initialize(window, document, jQuery);
 
    
-//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
-//http://stackoverflow.com/questions/5421253/sort-javascript-array-of-objects-based-on-one-of-the-objects-properties
-//http://stackoverflow.com/questions/12900058/how-can-i-sort-a-javascript-array-of-objects-numerically-and-then-alphabetically?lq=1
-//http://blog.garstasio.com/you-dont-need-jquery/selectors/
+	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+	//http://stackoverflow.com/questions/5421253/sort-javascript-array-of-objects-based-on-one-of-the-objects-properties
+	//http://stackoverflow.com/questions/12900058/how-can-i-sort-a-javascript-array-of-objects-numerically-and-then-alphabetically?lq=1
+	//http://blog.garstasio.com/you-dont-need-jquery/selectors/
 
 
   </script>
