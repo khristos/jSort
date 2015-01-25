@@ -5,6 +5,7 @@
   <meta name="description" content="SOG assignment">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Society of Grownups &mdash; Assignment</title>
+
   <style>
     th {text-align: left;}
     td {width:20%;}
@@ -19,7 +20,7 @@
 </head>
 
 <body>
-	
+
   <script>
   var films = [
 						{
@@ -90,12 +91,14 @@
 			$('#' + id).html(html);
 		}
 
-		var sortMatrix = function() {
-	    films.sort(function(a,b){
+		var compareValues = function(a, b) {
 	      var a_compare = a.Rating, b_compare = b.Rating;
 	      //return a_compare > b_compare ? 1 : a_compare < b_compare ? -1 : 0;
-	      return (a_compare - b_compare) //|| a_compare.localeCompare(b_compare.name); 
-	    });
+	      return (a_compare - b_compare) //|| a_compare.localeCompare(b_compare.name);
+		}
+
+		var sortMatrix = function() {
+			films.sort(compareValues);
 		}
 
 		var populateMatrix = function() {
@@ -122,10 +125,30 @@
 
    
 	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
 	//http://stackoverflow.com/questions/5421253/sort-javascript-array-of-objects-based-on-one-of-the-objects-properties
 	//http://stackoverflow.com/questions/12900058/how-can-i-sort-a-javascript-array-of-objects-numerically-and-then-alphabetically?lq=1
 	//http://blog.garstasio.com/you-dont-need-jquery/selectors/
+	//http://blog.carbonfive.com/2015/01/05/tidying-up-a-javascript-application-with-higher-order-functions/
 
+	//https://code.tutsplus.com/tutorials/sorting-values-with-javascript--net-7837
+
+	//http://www.terrill.ca/sorting/
+	//https://github.com/terrilldent/tsorter/blob/master/src/tsorter.js
+	
+	//jQuery
+	//http://www.designchemical.com/blog/index.php/jquery/sort-items-alphabetically-using-jquery/
+	//https://code.tutsplus.com/tutorials/using-jquery-to-manipulate-and-filter-data--net-5351
+
+	//Responsive
+	//http://exisweb.net/responsive-table-plugins-and-patterns
+
+	//UI inspiration
+	//http://jtable.org/tutorials/usingwithaspnetwebformspagemethods
+	//http://css-tricks.com/complete-guide-table-element/
+	//http://www.datatables.net/
+	//http://designshack.net/articles/css/15-tips-for-designing-terrific-tables/
+	
 
   </script>
 </body>
