@@ -44,8 +44,8 @@
 
 <body>
 
-  <script>
-  var films = [
+	<script>
+	var films = [
 						{
 							Title: "2001: A Space Odyssey",
 							Rating: 9.5,
@@ -93,31 +93,31 @@
 		var hasEventListener = !!document.addEventListener;
 		var initialSortedColumn = "Rating";
 
-    if ( !Object.create ){
-      Object.create = function( prototype ) {
-        var Obj = function() {return undefined;};
-        Obj.prototype = prototype;
-        return new Obj();
-      };
-    }
+		if ( !Object.create ){
+			Object.create = function( prototype ) {
+				var Obj = function() {return undefined;};
+				Obj.prototype = prototype;
+				return new Obj();
+			};
+		}
 
-    // Cross Browser event binding
-    var addEvent = function( element, eventName, callback ) { 
-        if ( hasEventListener ) { 
-        	element.addEventListener(eventName, callback, false ); 
-        } else {
-          	element.attachEvent( 'on' + eventName, callback); 
-        }
-    };
+		// event binding
+		var addEvent = function( element, eventName, callback ) { 
+			if ( hasEventListener ) { 
+				element.addEventListener(eventName, callback, false ); 
+			} else {
+					element.attachEvent( 'on' + eventName, callback); 
+			}
+		};
 
-    // Cross Browser event removal
-    var removeEvent = function( element, eventName, callback ) { 
-        if ( hasEventListener ) { 
-          element.removeEventListener(eventName, callback, false );
-        } else {
-          	element.detachEvent( 'on' + eventName, callback); 
-        }
-    };
+		// event removal
+		var removeEvent = function( element, eventName, callback ) { 
+			if ( hasEventListener ) { 
+				element.removeEventListener(eventName, callback, false );
+			} else {
+					element.detachEvent( 'on' + eventName, callback); 
+			}
+		};
 
 		var initialize = function() {
 			$('body').append('<div id="' + id + '"></div>');
