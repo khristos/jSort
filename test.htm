@@ -1,22 +1,45 @@
 <!DOCTYPE html>
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta charset="utf-8">
-  <meta name="description" content="SOG assignment">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Society of Grownups &mdash; Assignment</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta name="description" content="SOG assignment">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Society of Grownups &mdash; Assignment</title>
 
-  <style>
-    th {text-align: left;}
-    td {width:20%;}
-    ul, li {list-style: outside none none; padding:0; margin:0; }
-    .dates li {width: 180px; display: inline-block;}
-  </style>
+	<style>
+		table {
+			border-collapse: collapse;
+			border-spacing: 0;
+			border: 1px solid #bbb;
+		}
+		td, th {
+			border-top: 1px solid #ddd;
+			padding: 4px 8px;
+		}
+		th {text-align: left;}
+		td {width:20%;}
 
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+		.sortable th.desc:after {
+			content: "\25B2";
+		}
+		.sortable th.asc:after {
+			content: "\25BC";
+		}
 
+		ul, li {list-style: outside none none; padding:0; margin:0;}
+
+		@media screen and (max-width: 959px) {
+			table {
+				width: 100%;
+				overflow-x: auto;
+				display: block;
+			}
+		}
+	</style>
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
 </head>
 
 <body>
@@ -60,29 +83,73 @@
 						}
   ];
 
+	var matrix = matrix || {};
 
-  var matrix = matrix || {};
+	matrix = (function(window, document, jQuery) {
+		'use strict';
 
-  matrix = (function(window, document, jQuery) {
-  	'use strict';
+		var id = "content";
+		var table = "table1";
+		var hasEventListener = !!document.addEventListener;
+		var initialSortedColumn = "Rating";
 
-		var id = 'content';
+    if ( !Object.create ){
+      Object.create = function( prototype ) {
+        var Obj = function() {return undefined;};
+        Obj.prototype = prototype;
+        return new Obj();
+      };
+    }
+
+    // Cross Browser event binding
+    var addEvent = function( element, eventName, callback ) { 
+        if ( hasEventListener ) { 
+        	element.addEventListener(eventName, callback, false ); 
+        } else {
+          	element.attachEvent( 'on' + eventName, callback); 
+        }
+    };
+
+    // Cross Browser event removal
+    var removeEvent = function( element, eventName, callback ) { 
+        if ( hasEventListener ) { 
+          element.removeEventListener(eventName, callback, false );
+        } else {
+          	element.detachEvent( 'on' + eventName, callback); 
+        }
+    };
 
 		var initialize = function() {
 			$('body').append('<div id="' + id + '"></div>');
 			this.containMatrix();
 			this.sortMatrix();
 			this.populateMatrix();
+
+			var that = this, i;
+
+			if ( typeof table === 'string' ){
+				table = document.getElementById(table);
+			}
+
+			that.table = table;
+			that.ths   = table.getElementsByTagName("th");
+			that.tbody = table.tBodies[0];
+			that.trs   = that.tbody.getElementsByTagName("tr");
+			that.boundSort = that.sortMatrix.bind( that );
+
+			for ( i = 0; i < that.ths.length; i++ ) {
+				addEvent( that.ths[i], 'click', that.boundSort );
+			}
 		}
 
 		var containMatrix = function() {
 			var html = [
-				'<table class="sortable">',
+				'<table id="table1" class="sortable">',
 					'<thead>',
 					  '<tr>',
-					      '<th id="title">Title</th>',
-					      '<th id="rating">Rating</th>',
-					      '<th id="genre">Genre</th>',
+					      '<th data-sorttype="string" id="Title">Title</th>',
+					      '<th data-sorttype="number" id="Rating">Rating</th>',
+					      '<th data-sortType="string" id="Genre">Genre</th>',
 					  '</tr>',
 					'</thead>',
 					'<tbody></tbody>',
@@ -92,9 +159,9 @@
 		}
 
 		var compareValues = function(a, b) {
-	      var a_compare = a.Rating, b_compare = b.Rating;
-	      //return a_compare > b_compare ? 1 : a_compare < b_compare ? -1 : 0;
-	      return (a_compare - b_compare) //|| a_compare.localeCompare(b_compare.name);
+			var a_compare = a.Rating, b_compare = b.Rating;
+			//return a_compare > b_compare ? 1 : a_compare < b_compare ? -1 : 0;
+			return (a_compare - b_compare) //|| a_compare.localeCompare(b_compare.name);
 		}
 
 		var sortMatrix = function() {
@@ -102,14 +169,14 @@
 		}
 
 		var populateMatrix = function() {
-	    var tr;
-	    for (var i = 0, length = films.length; i < length; i++) {
-	      tr = $('<tr/>');
-	      tr.append("<td>" + films[i].Title + "</td>");
-	      tr.append("<td>" + films[i].Rating + "</td>");
-	      tr.append("<td>" + films[i].Genre + "</td>");
-	      $('table tbody').append(tr);
-	    }
+			var tr;
+			for (var i = 0, length = films.length; i < length; i++) {
+				tr = $('<tr/>');
+				tr.append("<td>" + films[i].Title + "</td>");
+				tr.append("<td>" + films[i].Rating + "</td>");
+				tr.append("<td>" + films[i].Genre + "</td>");
+				$('table tbody').append(tr);
+			}
 		}
 
 		return {
@@ -119,9 +186,9 @@
 			populateMatrix : populateMatrix,
 		}
 
-	})();
+	})(window, document, jQuery);
 
-	matrix.initialize(window, document, jQuery);
+	matrix.initialize();
 
    
 	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
