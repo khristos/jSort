@@ -140,7 +140,7 @@
 				that.boundSort = that.sortMatrix.bind(that);
 				that.boundCompare = that.compareValues.bind(that);
 				that.sortColumn = initialSortColumn;
-				that.defaultSortType = "numeric";
+				that.sortType = "numeric";
 				that.sortMatrix();
 				that.populateMatrix();
 				//that.getSortAlgorithm = that.getSortAlgorithm("numeric");
@@ -171,7 +171,7 @@
 			compareValues: function(a, b) {
 				var that = this;
 				var key = that.sortColumn;
-				var type = that.defaultSortType;
+				var type = that.sortType;
 
 				switch (type) {
 					case "numeric":
@@ -183,13 +183,10 @@
 							a = a.toLowerCase();
 							b = b.toLowerCase();
 							return +(a.key > b.key) || +(a.key === b.key) - 1;
+							//return a.key > b.key ? 1 : a.key < b.key ? -1 : 0;
 						}
 					default: /* string */
 				}
-				//var a_compare = a.Rating, b_compare = b.Rating;
-				//return a_compare > b_compare ? 1 : a_compare < b_compare ? -1 : 0;
-				//return (a_compare - b_compare) || a_compare.localeCompare(b_compare.name);
-				return a.Rating - b.Rating || a.Rating.localeCompare(b.Rating);
 			},
 
 			getSortAlgorithm: function(a,b) {
@@ -205,7 +202,7 @@
 				}
 				else {
 					key = that.sortColumn;
-					type = that.defaultSortType;
+					type = that.sortType;
 				}
 				console.log("type: ", type, "\tkey: ", key)
 
@@ -243,9 +240,9 @@
 		};
 
 		return {
-			instantiate: function( table, initialSortColumn ) {
-				var sorter = Object.create( sorterPrototype );
-				sorter.initialize( table, initialSortColumn );
+			instantiate: function(table, initialSortColumn) {
+				var sorter = Object.create(sorterPrototype);
+				sorter.initialize(table, initialSortColumn);
 				return sorter;
 			}
 		};
