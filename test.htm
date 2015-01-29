@@ -89,106 +89,171 @@
 		'use strict';
 
 		var id = "content";
-		var table = "table1";
+		var sorterPrototype, addEvent, removeEvent;
 		var hasEventListener = !!document.addEventListener;
-		var initialSortedColumn = "Rating";
 
 		if ( !Object.create ){
-			Object.create = function( prototype ) {
-				var Obj = function() {return undefined;};
+			Object.create = function(prototype) {
+				var Obj = function() { return undefined; };
 				Obj.prototype = prototype;
 				return new Obj();
 			};
 		}
 
 		// event binding
-		var addEvent = function( element, eventName, callback ) { 
-			if ( hasEventListener ) { 
-				element.addEventListener(eventName, callback, false ); 
+		addEvent = function(element, eventName, callback) { 
+			if (hasEventListener) { 
+				element.addEventListener( eventName, callback, false ); 
 			} else {
-					element.attachEvent( 'on' + eventName, callback); 
+					element.attachEvent( 'on' + eventName, callback ); 
 			}
 		};
 
 		// event removal
-		var removeEvent = function( element, eventName, callback ) { 
+		removeEvent = function(element, eventName, callback) { 
 			if ( hasEventListener ) { 
-				element.removeEventListener(eventName, callback, false );
+				element.removeEventListener( eventName, callback, false );
 			} else {
-					element.detachEvent( 'on' + eventName, callback); 
+					element.detachEvent( 'on' + eventName, callback ); 
 			}
 		};
 
-		var initialize = function() {
-			$('body').append('<div id="' + id + '"></div>');
-			this.containMatrix();
-			this.sortMatrix();
-			this.populateMatrix();
 
-			var that = this, i;
+		sorterPrototype = {
 
-			if ( typeof table === 'string' ){
-				table = document.getElementById(table);
+			initialize: function(table, initialSortColumn) {
+				var that = this, i;
+				$('body').append('<div id="' + id + '"></div>');
+
+				that.containMatrix();
+				//that.sortMatrix();
+				//that.populateMatrix();
+
+				if ( typeof table === 'string' ){
+					table = document.getElementById(table);
+				}
+
+				that.table = table;
+				that.ths   = table.getElementsByTagName("th");
+				that.tbody = table.tBodies[0];
+				that.trs   = that.tbody.getElementsByTagName("tr");
+				that.boundSort = that.sortMatrix.bind(that);
+				that.boundCompare = that.compareValues.bind(that);
+				that.sortColumn = initialSortColumn;
+				that.defaultSortType = "numeric";
+				that.sortMatrix();
+				that.populateMatrix();
+				//that.getSortAlgorithm = that.getSortAlgorithm("numeric");
+
+				console.log("that: ", that);
+
+				for (var i = 0, length = that.ths.length; i < length; i++ ) {
+					addEvent( that.ths[i], 'click', that.boundSort );
+				}
+			},
+
+			containMatrix: function() {
+				var html = [
+					'<table id="table1" class="sortable">',
+						'<thead>',
+						  '<tr>',
+						      '<th data-sorttype="string" id="Title">Title</th>',
+						      '<th data-sorttype="number" id="Rating">Rating</th>',
+						      '<th data-sortType="string" id="Genre">Genre</th>',
+						  '</tr>',
+						'</thead>',
+						'<tbody></tbody>',
+					'</table>'
+					].join('');
+				$('#' + id).html(html);
+			},
+
+			compareValues: function(a, b) {
+				var that = this;
+				var key = that.sortColumn;
+				var type = that.defaultSortType;
+
+				switch (type) {
+					case "numeric":
+						return function(a, b) {
+							return a[key] - b[key] || a.key.localeCompare(b.key);
+						};
+					case "string":
+						return function(a, b) {
+							a = a.toLowerCase();
+							b = b.toLowerCase();
+							return +(a.key > b.key) || +(a.key === b.key) - 1;
+						}
+					default: /* string */
+				}
+				//var a_compare = a.Rating, b_compare = b.Rating;
+				//return a_compare > b_compare ? 1 : a_compare < b_compare ? -1 : 0;
+				//return (a_compare - b_compare) || a_compare.localeCompare(b_compare.name);
+				return a.Rating - b.Rating || a.Rating.localeCompare(b.Rating);
+			},
+
+			getSortAlgorithm: function(a,b) {
+				var that = this, key, type, target;
+				if (e) {
+					target = e.target;
+					var sortHash =  {
+						key: target.firstChild.nodeValue,
+						type: target.getAttribute('data-sorttype')
+					}
+					key = sortHash.key;
+					type = sortHash.type;
+				}
+				else {
+					key = that.sortColumn;
+					type = that.defaultSortType;
+				}
+				console.log("type: ", type, "\tkey: ", key)
+
+				switch (type) {
+					case "numeric":
+						return function(a, b) {
+							return a[key] - b[key] || a.key.localeCompare(b.key);
+						};
+					case "string":
+						return function(a, b) {
+							a = a.toLowerCase();
+							b = b.toLowerCase();
+							return +(a.key > b.key) || +(a.key === b.key) - 1;
+						}
+					default: /* string */
+				}
+			},
+
+			sortMatrix: function() {
+				var that = this;
+				films.sort(that.boundCompare);
+				//films.sort(that.getSortAlgorithm);
+			},
+
+			populateMatrix: function() {
+				var tr;
+				for (var i = 0, length = films.length; i < length; i++) {
+					tr = $('<tr/>');
+					tr.append("<td>" + films[i].Title + "</td>");
+					tr.append("<td>" + films[i].Rating + "</td>");
+					tr.append("<td>" + films[i].Genre + "</td>");
+					$('table tbody').append(tr);
+				}
 			}
-
-			that.table = table;
-			that.ths   = table.getElementsByTagName("th");
-			that.tbody = table.tBodies[0];
-			that.trs   = that.tbody.getElementsByTagName("tr");
-			that.boundSort = that.sortMatrix.bind( that );
-
-			for ( i = 0; i < that.ths.length; i++ ) {
-				addEvent( that.ths[i], 'click', that.boundSort );
-			}
-		}
-
-		var containMatrix = function() {
-			var html = [
-				'<table id="table1" class="sortable">',
-					'<thead>',
-					  '<tr>',
-					      '<th data-sorttype="string" id="Title">Title</th>',
-					      '<th data-sorttype="number" id="Rating">Rating</th>',
-					      '<th data-sortType="string" id="Genre">Genre</th>',
-					  '</tr>',
-					'</thead>',
-					'<tbody></tbody>',
-				'</table>'
-				].join('');
-			$('#' + id).html(html);
-		}
-
-		var compareValues = function(a, b) {
-			var a_compare = a.Rating, b_compare = b.Rating;
-			//return a_compare > b_compare ? 1 : a_compare < b_compare ? -1 : 0;
-			return (a_compare - b_compare) //|| a_compare.localeCompare(b_compare.name);
-		}
-
-		var sortMatrix = function() {
-			films.sort(compareValues);
-		}
-
-		var populateMatrix = function() {
-			var tr;
-			for (var i = 0, length = films.length; i < length; i++) {
-				tr = $('<tr/>');
-				tr.append("<td>" + films[i].Title + "</td>");
-				tr.append("<td>" + films[i].Rating + "</td>");
-				tr.append("<td>" + films[i].Genre + "</td>");
-				$('table tbody').append(tr);
-			}
-		}
+		};
 
 		return {
-			initialize: initialize,
-			containMatrix: containMatrix,
-			sortMatrix: sortMatrix,
-			populateMatrix : populateMatrix,
-		}
+			instantiate: function( table, initialSortColumn ) {
+				var sorter = Object.create( sorterPrototype );
+				sorter.initialize( table, initialSortColumn );
+				return sorter;
+			}
+		};
 
-	})(window, document, jQuery);
+	}(window, document, jQuery));
 
-	matrix.initialize();
+	var sorted1 = matrix.instantiate('table1', 'Rating');
+
 
    
 	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
