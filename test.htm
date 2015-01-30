@@ -153,7 +153,7 @@
 						'<thead>',
 						  '<tr>',
 						      '<th data-sorttype="string" id="Title">Title</th>',
-						      '<th data-sorttype="number" id="Rating">Rating</th>',
+						      '<th data-sorttype="numeric" id="Rating">Rating</th>',
 						      '<th data-sortType="string" id="Genre">Genre</th>',
 						  '</tr>',
 						'</thead>',
@@ -179,26 +179,27 @@
 					type = that.sortType;
 				}
 				console.log("type: ", type, "\tkey: ", key);
-				console.log(films);
 
-				films.sort(function(a, b) {
-					switch (type) {
-						case "numeric":
-							return function(a, b) {
-								return a[key] - b[key] || a.key.localeCompare(b.key);
-							};
-						case "string":
-							return function(a, b) {
-								a = a.toLowerCase();
-								b = b.toLowerCase();
-								var asc = 1;
-								return +(a.key > b.key) || +(a.key === b.key) - 1;
-								//return (a.key == b.key) ? 0 : ((a.key > b.key) ? asc : -1 * asc);
-								//return a.key > b.key ? 1 : a.key < b.key ? -1 : 0;
-							}
-						default: /* string */
-					}
-				});
+				switch (type) {
+					case "numeric":
+						films.sort(function(a, b) {
+							return a[key] - b[key];
+						});
+						break;
+					case "string":
+						films.sort(function(a, b) {alert(typeof(a[key]))
+							x = a[key].toLowerCase();
+							y = b[key].toLowerCase();
+							var asc = 1;
+							return +(x.key > y.key) || +(x.key === y.key) - 1;
+							//return (a.key == b.key) ? 0 : ((a.key > b.key) ? asc : -1 * asc);
+							//return a.key > b.key ? 1 : a.key < b.key ? -1 : 0;
+						});
+						break;
+					default: /* string */
+				}
+
+				console.log(films);
 			},
 
 			populateMatrix: function() {
@@ -229,6 +230,7 @@
    
 	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
 	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+	//http://www.sitepoint.com/sophisticated-sorting-in-javascript/
 	//http://stackoverflow.com/questions/5421253/sort-javascript-array-of-objects-based-on-one-of-the-objects-properties
 	//http://stackoverflow.com/questions/12900058/how-can-i-sort-a-javascript-array-of-objects-numerically-and-then-alphabetically?lq=1
 	//http://blog.garstasio.com/you-dont-need-jquery/selectors/
