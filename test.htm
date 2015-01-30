@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta charset="utf-8">
 	<meta name="description" content="SOG assignment">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,7 +15,7 @@
 			border-top: 1px solid #ddd;
 			padding: 4px 8px;
 		}
-		th {text-align: left;}
+		th {text-align: left; background-color: #C8C8C8; cursor: pointer;}
 		td {width:20%;}
 
 		.sortable th.desc:after {
@@ -121,13 +120,11 @@
 
 		sorterPrototype = {
 
-			initialize: function(table, initialSortColumn) {
+			initialize: function(table, initialSortColumn, initialSortType) {
 				var that = this, i;
 				$('body').append('<div id="' + id + '"></div>');
 
 				that.containMatrix();
-				//that.sortMatrix();
-				//that.populateMatrix();
 
 				if ( typeof table === 'string' ){
 					table = document.getElementById(table);
@@ -137,13 +134,11 @@
 				that.ths   = table.getElementsByTagName("th");
 				that.tbody = table.tBodies[0];
 				that.trs   = that.tbody.getElementsByTagName("tr");
-				that.boundSort = that.sortMatrix.bind(that);
-				that.boundCompare = that.compareValues.bind(that);
-				that.sortColumn = initialSortColumn;
-				that.sortType = "numeric";
+				that.boundSort    = that.sortMatrix.bind(that);
+				that.sortColumn   = initialSortColumn;
+				that.sortType     = initialSortType;
 				that.sortMatrix();
 				that.populateMatrix();
-				//that.getSortAlgorithm = that.getSortAlgorithm("numeric");
 
 				console.log("that: ", that);
 
@@ -168,28 +163,7 @@
 				$('#' + id).html(html);
 			},
 
-			compareValues: function(a, b) {
-				var that = this;
-				var key = that.sortColumn;
-				var type = that.sortType;
-
-				switch (type) {
-					case "numeric":
-						return function(a, b) {
-							return a[key] - b[key] || a.key.localeCompare(b.key);
-						};
-					case "string":
-						return function(a, b) {
-							a = a.toLowerCase();
-							b = b.toLowerCase();
-							return +(a.key > b.key) || +(a.key === b.key) - 1;
-							//return a.key > b.key ? 1 : a.key < b.key ? -1 : 0;
-						}
-					default: /* string */
-				}
-			},
-
-			getSortAlgorithm: function(a,b) {
+			sortMatrix: function(e) {
 				var that = this, key, type, target;
 				if (e) {
 					target = e.target;
@@ -204,27 +178,27 @@
 					key = that.sortColumn;
 					type = that.sortType;
 				}
-				console.log("type: ", type, "\tkey: ", key)
+				console.log("type: ", type, "\tkey: ", key);
+				console.log(films);
 
-				switch (type) {
-					case "numeric":
-						return function(a, b) {
-							return a[key] - b[key] || a.key.localeCompare(b.key);
-						};
-					case "string":
-						return function(a, b) {
-							a = a.toLowerCase();
-							b = b.toLowerCase();
-							return +(a.key > b.key) || +(a.key === b.key) - 1;
-						}
-					default: /* string */
-				}
-			},
-
-			sortMatrix: function() {
-				var that = this;
-				films.sort(that.boundCompare);
-				//films.sort(that.getSortAlgorithm);
+				films.sort(function(a, b) {
+					switch (type) {
+						case "numeric":
+							return function(a, b) {
+								return a[key] - b[key] || a.key.localeCompare(b.key);
+							};
+						case "string":
+							return function(a, b) {
+								a = a.toLowerCase();
+								b = b.toLowerCase();
+								var asc = 1;
+								return +(a.key > b.key) || +(a.key === b.key) - 1;
+								//return (a.key == b.key) ? 0 : ((a.key > b.key) ? asc : -1 * asc);
+								//return a.key > b.key ? 1 : a.key < b.key ? -1 : 0;
+							}
+						default: /* string */
+					}
+				});
 			},
 
 			populateMatrix: function() {
@@ -240,16 +214,16 @@
 		};
 
 		return {
-			instantiate: function(table, initialSortColumn) {
+			instantiate: function(table, initialSortColumn, initialSortType) {
 				var sorter = Object.create(sorterPrototype);
-				sorter.initialize(table, initialSortColumn);
+				sorter.initialize(table, initialSortColumn, initialSortType);
 				return sorter;
 			}
 		};
 
 	}(window, document, jQuery));
 
-	var sorted1 = matrix.instantiate('table1', 'Rating');
+	var sorted1 = matrix.instantiate('table1', 'Rating', 'numeric');
 
 
    
@@ -264,6 +238,7 @@
 
 	//http://www.terrill.ca/sorting/
 	//https://github.com/terrilldent/tsorter/blob/master/src/tsorter.js
+	//http://madhatted.com/2008/1/11/the-joy-of-a-minimal-complete-javascript-table-sort
 	
 	//jQuery
 	//http://www.designchemical.com/blog/index.php/jquery/sort-items-alphabetically-using-jquery/
@@ -277,6 +252,7 @@
 	//http://css-tricks.com/complete-guide-table-element/
 	//http://www.datatables.net/
 	//http://designshack.net/articles/css/15-tips-for-designing-terrific-tables/
+	//http://tristen.ca/tablesort/demo/
 	
 
   </script>
