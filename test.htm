@@ -151,11 +151,11 @@
 				var html = [
 					'<table id="table1" class="sortable">',
 						'<thead>',
-						  '<tr>',
-						      '<th data-sorttype="string" id="Title">Title</th>',
-						      '<th data-sorttype="numeric" id="Rating">Rating</th>',
-						      '<th data-sortType="string" id="Genre">Genre</th>',
-						  '</tr>',
+							'<tr>',
+								'<th data-sorttype="string" id="Title">Title</th>',
+								'<th data-sorttype="numeric" id="Rating">Rating</th>',
+								'<th data-sortType="string" id="Genre">Genre</th>',
+							'</tr>',
 						'</thead>',
 						'<tbody></tbody>',
 					'</table>'
@@ -165,14 +165,19 @@
 
 			sortMatrix: function(e) {
 				var that = this, key, type, target;
+				var trs  = that.trs, length = trs.length;
 				if (e) {
 					target = e.target;
-					var sortHash =  {
+					var sortCriteria = {
 						key: target.firstChild.nodeValue,
 						type: target.getAttribute('data-sorttype')
 					}
-					key = sortHash.key;
-					type = sortHash.type;
+					key = sortCriteria.key;
+					type = sortCriteria.type;
+
+					while (length--) {
+						that.tbody.removeChild(that.trs[length]);
+					}
 				}
 				else {
 					key = that.sortColumn;
@@ -187,9 +192,9 @@
 						});
 						break;
 					case "string":
-						films.sort(function(a, b) {alert(typeof(a[key]))
-							x = a[key].toLowerCase();
-							y = b[key].toLowerCase();
+						films.sort(function(a, b) {
+							var x = a[key].toLowerCase();
+							var y = b[key].toLowerCase();
 							var asc = 1;
 							return +(x.key > y.key) || +(x.key === y.key) - 1;
 							//return (a.key == b.key) ? 0 : ((a.key > b.key) ? asc : -1 * asc);
@@ -199,7 +204,9 @@
 					default: /* string */
 				}
 
-				console.log(films);
+				if (e) {
+					that.populateMatrix();
+				}
 			},
 
 			populateMatrix: function() {
