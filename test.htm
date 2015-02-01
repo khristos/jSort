@@ -167,11 +167,16 @@
 
 			sortMatrix: function(e) {
 				var that = this, key, type, order, target;
-				var trs  = that.trs, length = trs.length;
+				var trs  = that.trs, length_trs = trs.length;
+				var length_ths = that.ths.length;
 				var map  = films;
 
 				if (e) {
 					target = e.target;
+					for (var i = 0; i < length_ths; i++ ) {
+						if (that.ths[i] == target) {continue;}
+						that.ths[i].className = "";
+					}
 					target.className = target.className !== 'asc' ? 'asc' : 'desc';
 
 					var sortCriteria = {
@@ -183,8 +188,8 @@
 					type  = sortCriteria.type;
 					order = sortCriteria.order;
 
-					while (length--) {
-						that.tbody.removeChild(that.trs[length]);
+					while (length_trs--) {
+						that.tbody.removeChild(that.trs[length_trs]);
 					}
 				}
 				else {
