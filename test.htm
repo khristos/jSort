@@ -102,31 +102,30 @@
 		// event binding
 		addEvent = function(element, eventName, callback) {
 			if (hasEventListener) {
-				element.addEventListener( eventName, callback, false ); 
+				element.addEventListener(eventName, callback, false); 
 			} else {
-					element.attachEvent( 'on' + eventName, callback );
+					element.attachEvent('on' + eventName, callback);
 			}
 		};
 
 		// event removal
 		removeEvent = function(element, eventName, callback) {
 			if ( hasEventListener ) {
-				element.removeEventListener( eventName, callback, false );
+				element.removeEventListener(eventName, callback, false);
 			} else {
-					element.detachEvent( 'on' + eventName, callback ); 
+					element.detachEvent('on' + eventName, callback); 
 			}
 		};
 
 
 		sorterPrototype = {
-
 			initialize: function(table, initialSortColumn, initialSortType) {
 				var that = this, i;
 				$('body').append('<div id="' + id + '"></div>');
 
 				that.containMatrix();
 
-				if ( typeof table === 'string' ){
+				if (typeof table === 'string'){
 					table = document.getElementById(table);
 				}
 
@@ -142,10 +141,10 @@
 				that.sortMatrix();
 				that.populateMatrix();
 
-				console.log("that: ", that);
+				//console.log("that: ", that);
 
 				for (var i = 0, length = that.ths.length; i < length; i++ ) {
-					addEvent( that.ths[i], 'click', that.boundSort );
+					addEvent(that.ths[i], 'click', that.boundSort);
 				}
 			},
 
