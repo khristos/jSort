@@ -136,7 +136,7 @@
 				that.trs   = that.tbody.getElementsByTagName("tr");
 				that.boundSort    = that.sortMatrix.bind(that);
 				that.sortColumn   = initialSortColumn; //column name
-				that.sortType     = initialSortType; //numeric or string
+				that.sortType     = initialSortType;   //numeric or string
 				that.sortOrder    = "asc";
 				that.map          = null;
 				that.sortMatrix();
@@ -200,14 +200,14 @@
 						map.sort(function(a, b) {
 							var x = parseFloat(a[key]);
 							var y = parseFloat(b[key]);
-							return  order == "asc"  ? x - y : y - x;
+							return  order == "asc" ? x - y : y - x;
 						});
 						break;
 					case "string":
 						map.sort(function(a, b) {
 							var x = a[key].toLowerCase();
 							var y = b[key].toLowerCase();
-							var asc = that.sortOrder == "asc" ? 1 : -1;
+							var asc = order == "asc" ? 1 : -1;
 							//return +(x > y) || +(x === y) - 1;
 							return (x == y) ? 0 : ((x > y) ? asc : -1 * asc);
 							//return a.key > b.key ? 1 : a.key < b.key ? -1 : 0;
