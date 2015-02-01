@@ -18,10 +18,10 @@
 		th {text-align: left; background-color: #C8C8C8; cursor: pointer;}
 		td {width:20%;}
 
-		.sortable th.desc:after {
+		.sortable th.asc:after {
 			content: "\25B2";
 		}
-		.sortable th.asc:after {
+		.sortable th.desc:after {
 			content: "\25BC";
 		}
 
@@ -91,7 +91,7 @@
 		var sorterPrototype, addEvent, removeEvent;
 		var hasEventListener = !!document.addEventListener;
 
-		if ( !Object.create ){
+		if ( !Object.create ) {
 			Object.create = function(prototype) {
 				var Obj = function() { return undefined; };
 				Obj.prototype = prototype;
@@ -100,17 +100,17 @@
 		}
 
 		// event binding
-		addEvent = function(element, eventName, callback) { 
-			if (hasEventListener) { 
+		addEvent = function(element, eventName, callback) {
+			if (hasEventListener) {
 				element.addEventListener( eventName, callback, false ); 
 			} else {
-					element.attachEvent( 'on' + eventName, callback ); 
+					element.attachEvent( 'on' + eventName, callback );
 			}
 		};
 
 		// event removal
-		removeEvent = function(element, eventName, callback) { 
-			if ( hasEventListener ) { 
+		removeEvent = function(element, eventName, callback) {
+			if ( hasEventListener ) {
 				element.removeEventListener( eventName, callback, false );
 			} else {
 					element.detachEvent( 'on' + eventName, callback ); 
@@ -135,8 +135,10 @@
 				that.tbody = table.tBodies[0];
 				that.trs   = that.tbody.getElementsByTagName("tr");
 				that.boundSort    = that.sortMatrix.bind(that);
-				that.sortColumn   = initialSortColumn;
-				that.sortType     = initialSortType;
+				that.sortColumn   = initialSortColumn; //column name
+				that.sortType     = initialSortType; //numeric or string
+				that.sortOrder    = "asc";
+				that.map          = null;
 				that.sortMatrix();
 				that.populateMatrix();
 
@@ -164,40 +166,50 @@
 			},
 
 			sortMatrix: function(e) {
-				var that = this, key, type, target;
+				var that = this, key, type, order, target;
 				var trs  = that.trs, length = trs.length;
+				var map  = films;
+
 				if (e) {
 					target = e.target;
+					target.className = target.className !== 'asc' ? 'asc' : 'desc';
+
 					var sortCriteria = {
-						key: target.firstChild.nodeValue,
-						type: target.getAttribute('data-sorttype')
+						   key: target.firstChild.nodeValue,
+						  type: target.getAttribute('data-sorttype'),
+						 order: target.className || that.sortOrder
 					}
-					key = sortCriteria.key;
-					type = sortCriteria.type;
+					key   = sortCriteria.key;
+					type  = sortCriteria.type;
+					order = sortCriteria.order;
 
 					while (length--) {
 						that.tbody.removeChild(that.trs[length]);
 					}
 				}
 				else {
-					key = that.sortColumn;
-					type = that.sortType;
+					key   = that.sortColumn;
+					type  = that.sortType;
+					order = that.sortOrder;
 				}
-				console.log("type: ", type, "\tkey: ", key);
+				//console.log("presorted: ", films);
+				//console.log("type: ", type, "\tkey: ", key);
 
 				switch (type) {
 					case "numeric":
-						films.sort(function(a, b) {
-							return a[key] - b[key];
+						map.sort(function(a, b) {
+							var x = parseFloat(a[key]);
+							var y = parseFloat(b[key]);
+							return  order == "asc"  ? x - y : y - x;
 						});
 						break;
 					case "string":
-						films.sort(function(a, b) {
+						map.sort(function(a, b) {
 							var x = a[key].toLowerCase();
 							var y = b[key].toLowerCase();
-							var asc = 1;
-							return +(x.key > y.key) || +(x.key === y.key) - 1;
-							//return (a.key == b.key) ? 0 : ((a.key > b.key) ? asc : -1 * asc);
+							var asc = that.sortOrder == "asc" ? 1 : -1;
+							//return +(x > y) || +(x === y) - 1;
+							return (x == y) ? 0 : ((x > y) ? asc : -1 * asc);
 							//return a.key > b.key ? 1 : a.key < b.key ? -1 : 0;
 						});
 						break;
@@ -207,15 +219,16 @@
 				if (e) {
 					that.populateMatrix();
 				}
+				that.map = map;
 			},
 
 			populateMatrix: function() {
-				var tr;
-				for (var i = 0, length = films.length; i < length; i++) {
+				var that = this, tr, map = that.map;
+				for (var i = 0, length = map.length; i < length; i++) {
 					tr = $('<tr/>');
-					tr.append("<td>" + films[i].Title + "</td>");
-					tr.append("<td>" + films[i].Rating + "</td>");
-					tr.append("<td>" + films[i].Genre + "</td>");
+					tr.append("<td>" + map[i].Title + "</td>");
+					tr.append("<td>" + map[i].Rating + "</td>");
+					tr.append("<td>" + map[i].Genre + "</td>");
 					$('table tbody').append(tr);
 				}
 			}
