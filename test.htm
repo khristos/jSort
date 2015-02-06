@@ -91,7 +91,7 @@
 		var sorterPrototype, addEvent, removeEvent;
 		var hasEventListener = !!document.addEventListener;
 
-		if ( !Object.create ) {
+		if (!Object.create) {
 			Object.create = function(prototype) {
 				var Obj = function() { return undefined; };
 				Obj.prototype = prototype;
@@ -172,7 +172,7 @@
 
 				if (e) {
 					target = e.target;
-					for (var i = 0; i < length_ths; i++ ) {
+					for (var i = 0; i < length_ths; i++) {
 						if (that.ths[i] == target) {continue;}
 						that.ths[i].className = "";
 					}
