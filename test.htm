@@ -137,7 +137,7 @@
 				that.sortColumn   = initialSortColumn; //column name
 				that.sortType     = initialSortType;   //numeric or string
 				that.sortOrder    = "asc";
-				that.map          = null;
+				that.mapped          = null;
 				that.sortMatrix();
 				that.populateMatrix();
 
@@ -168,7 +168,7 @@
 				var that = this, key, type, order, target;
 				var trs  = that.trs, length_trs = trs.length;
 				var length_ths = that.ths.length;
-				var map  = films;
+				var mapped  = films;
 
 				if (e) {
 					target = e.target;
@@ -201,14 +201,14 @@
 
 				switch (type) {
 					case "numeric":
-						map.sort(function(a, b) {
+						mapped.sort(function(a, b) {
 							var x = parseFloat(a[key]);
 							var y = parseFloat(b[key]);
 							return  order == "asc" ? x - y : y - x;
 						});
 						break;
 					case "string":
-						map.sort(function(a, b) {
+						mapped.sort(function(a, b) {
 							var x = a[key].toLowerCase();
 							var y = b[key].toLowerCase();
 							var asc = order == "asc" ? 1 : -1;
@@ -223,16 +223,16 @@
 				if (e) {
 					that.populateMatrix();
 				}
-				that.map = map;
+				that.mapped = mapped;
 			},
 
 			populateMatrix: function() {
-				var that = this, tr, map = that.map;
-				for (var i = 0, length = map.length; i < length; i++) {
+				var that = this, tr, mapped = that.mapped;
+				for (var i = 0, length = mapped.length; i < length; i++) {
 					tr = $('<tr/>');
-					tr.append("<td>" + map[i].Title + "</td>");
-					tr.append("<td>" + map[i].Rating + "</td>");
-					tr.append("<td>" + map[i].Genre + "</td>");
+					tr.append("<td>" + mapped[i].Title + "</td>");
+					tr.append("<td>" + mapped[i].Rating + "</td>");
+					tr.append("<td>" + mapped[i].Genre + "</td>");
 					$('table tbody').append(tr);
 				}
 			}
